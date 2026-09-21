@@ -19,6 +19,8 @@ export const site = {
   hours: ['Mon - Sat 8:00 AM - 8:30 PM', 'Sunday 9:00 AM - 6:00 PM'],
   whatsapp: 'https://wa.me/919924096196',
   primaryPhone: { display: '+91 99240 96196', tel: '+919924096196' },
+  /** Web3Forms access key for the contact form. Public by design; enquiries are emailed to the address it was created with. */
+  formAccessKey: '900f3206-52d1-4cb0-9c80-367e1952596a',
 };
 
 export const stats = [

@@ -1,5 +1,5 @@
 ---
-import { faqs, offices } from '../data/site';
+import { faqs, offices, site } from '../data/site';
 ---
 
 <section class="section contact" id="contact">
@@ -13,9 +13,11 @@ import { faqs, offices } from '../data/site';
         class="form"
         id="contact-form"
         novalidate
-        data-endpoint={import.meta.env.PUBLIC_FORM_ENDPOINT ?? ''}
         data-fallback-email={offices.head.email}
       >
+        {site.formAccessKey && <input type="hidden" name="access_key" value={site.formAccessKey} />}
+        <input type="hidden" name="subject" value="New enquiry from shreedrt.com" />
+        <input type="hidden" name="from_name" value="shreedrt.com" />
         <div class="field">
           <label for="f-name">Name</label>
           <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Enter your name" />
@@ -58,7 +60,7 @@ import { faqs, offices } from '../data/site';
           ></textarea>
         </div>
         <div class="hp" aria-hidden="true">
-          <label>Leave blank <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+          <label>Leave unchecked <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" /></label>
         </div>
         <button class="btn btn-primary" type="submit">Send message</button>
         <p class="form-status" role="status" aria-live="polite"></p>
@@ -211,12 +213,14 @@ import { faqs, offices } from '../data/site';
 </style>
 
 <script>
-  /* A static site can't send email by itself. If PUBLIC_FORM_ENDPOINT is set (see .env.example)
-     the form POSTs there; otherwise it opens the visitor's email app addressed to the head office. */
+  /* A static site can't send email by itself, so the form posts to Web3Forms, which emails the enquiry
+     to the address the access key was created with (see `formAccessKey` in src/data/site.ts).
+     If no key is configured it falls back to opening the visitor's email app. */
+  const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
   const form = document.querySelector<HTMLFormElement>('#contact-form');
 
   if (form) {
-    const endpoint = form.dataset.endpoint ?? '';
+    const hasAccessKey = Boolean(form.querySelector('input[name="access_key"]'));
     const fallbackEmail = form.dataset.fallbackEmail ?? '';
     const status = form.querySelector<HTMLElement>('.form-status')!;
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
@@ -231,20 +235,22 @@ import { faqs, offices } from '../data/site';
       if (!form.reportValidity()) return;
 
       const data = new FormData(form);
-      if (data.get('_gotcha')) return; // honeypot tripped: silently drop
+      if (data.get('botcheck')) return; // honeypot tripped: silently drop
 
-      if (endpoint) {
+      if (hasAccessKey) {
         const label = button.textContent;
         button.disabled = true;
         button.textContent = 'Sending…';
         say('');
         try {
-          const res = await fetch(endpoint, {
+          const res = await fetch(WEB3FORMS_ENDPOINT, {
             method: 'POST',
             body: data,
             headers: { Accept: 'application/json' },
           });
-          if (!res.ok) throw new Error(String(res.status));
+          // Web3Forms reports failures in the JSON body, so check `success`, not just the HTTP status.
+          const result = await res.json();
+          if (!res.ok || !result.success) throw new Error(result.message ?? String(res.status));
           form.reset();
           say('Thanks for contacting us! We will be in touch with you shortly.', 'ok');
         } catch {

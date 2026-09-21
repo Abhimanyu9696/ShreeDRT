@@ -37,16 +37,14 @@ Requires Node 22.12 or newer.
 
 ## Contact form
 
-A static site can't send email by itself. Until a form service is configured, the form opens the
-visitor's email app addressed to the head-office email (`src/data/site.ts`).
+A static site can't send email by itself, so the form posts to [Web3Forms](https://web3forms.com), which
+emails each enquiry to the address the access key was created with (`info@shreedrt.com`).
 
-To make it submit directly:
-
-1. Create a free form at [Formspree](https://formspree.io) (or Web3Forms) and copy its endpoint URL.
-2. Locally: copy `.env.example` to `.env` and set `PUBLIC_FORM_ENDPOINT=<url>`.
-3. On Cloudflare: add an environment variable named `PUBLIC_FORM_ENDPOINT` to the project
-   (*Settings → Variables and Secrets*, or *Environment variables* on Pages) and redeploy. It is read at
-   **build** time, so a change only takes effect after a new build.
+- The access key is `formAccessKey` in `src/data/site.ts`. Web3Forms access keys are meant to be public.
+- To change where enquiries go, create a new access key at web3forms.com for the new address and replace it.
+- If `formAccessKey` is left empty, the form falls back to opening the visitor's email app.
+- Spam protection: a hidden `botcheck` field (Web3Forms honeypot). Enquiry email subject and sender name are the
+  hidden `subject` / `from_name` fields in `src/components/Contact.astro`.
 
 ## Deploying to Cloudflare
 
