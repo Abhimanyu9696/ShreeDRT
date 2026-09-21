@@ -1,0 +1,178 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { site } from '../data/site';
+
+const links = [
+  { href: '#experience', label: 'About' },
+  { href: '#markets', label: 'Markets' },
+  { href: '#faq', label: 'FAQ' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label={`${site.name} — home`}>
+      <Image src={logo} alt="" width={52} densities={[1, 2]} loading="eager" />
+      <span>{site.shortName}</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <span></span>
+    </button>
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul>
+        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+      <a class="btn btn-primary" href={`tel:${site.primaryPhone.tel}`}>Call now</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--white);
+    box-shadow: 0 1px 0 var(--line);
+  }
+  .site-header .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 76px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+  .brand span {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.15;
+    color: var(--navy);
+    max-width: 14ch;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .nav ul {
+    display: flex;
+    gap: 1.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav a {
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--navy);
+  }
+  .nav ul a:hover {
+    color: var(--orange-text);
+  }
+  .nav .btn {
+    padding: 0.65rem 1.2rem;
+    font-size: 0.8rem;
+  }
+
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 10px;
+    margin-right: -10px;
+    cursor: pointer;
+  }
+  .nav-toggle span,
+  .nav-toggle span::before,
+  .nav-toggle span::after {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--navy);
+    content: '';
+    position: relative;
+    transition: transform 0.2s, background-color 0.2s;
+  }
+  .nav-toggle span::before {
+    position: absolute;
+    top: -7px;
+  }
+  .nav-toggle span::after {
+    position: absolute;
+    top: 7px;
+  }
+  .nav-toggle[aria-expanded='true'] span {
+    background: transparent;
+  }
+  .nav-toggle[aria-expanded='true'] span::before {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav-toggle[aria-expanded='true'] span::after {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 860px) {
+    .nav-toggle {
+      display: block;
+    }
+    .nav {
+      position: absolute;
+      inset: 76px 0 auto 0;
+      background: var(--white);
+      box-shadow: 0 14px 24px rgba(15, 23, 42, 0.12);
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0.5rem var(--gutter) 1.25rem;
+      display: none;
+    }
+    .nav.open {
+      display: flex;
+    }
+    .nav ul {
+      flex-direction: column;
+      gap: 0;
+    }
+    .nav ul a {
+      display: block;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.95rem;
+    }
+    .nav .btn {
+      margin-top: 1rem;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const nav = document.getElementById('site-nav');
+
+  if (toggle && nav) {
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
+    nav.addEventListener('click', (e) => {
+      if ((e.target as Element).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+  }
+</script>

@@ -1,0 +1,97 @@
+---
+import { site, stats } from '../data/site';
+---
+
+<div class="experience" id="experience">
+  <div class="wrap">
+    <div class="card">
+      <div class="copy">
+        <span class="eyebrow">Experience Matters the Most</span>
+        <h2>{site.experienceLabel} Years Of Experience</h2>
+        <p>{site.about}</p>
+      </div>
+      <div class="stats">
+        {
+          stats.map((s) => (
+            <div class="stat">
+              <strong>{s.value}</strong>
+              <span>{s.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .experience {
+    position: relative;
+    z-index: 2;
+    margin-top: -100px;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--white);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .copy {
+    padding: 3.5rem;
+    align-self: center;
+  }
+  .copy h2 {
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  }
+  .copy p:last-child {
+    margin-bottom: 0;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--cream);
+  }
+  .stat {
+    padding: 2.5rem;
+    border-right: 1px solid rgba(15, 23, 42, 0.1);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .stat:nth-child(2n) {
+    border-right: 0;
+  }
+  .stat:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+  .stat strong {
+    font-family: var(--font-head);
+    font-size: clamp(2rem, 3.6vw, 2.9rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--navy);
+  }
+  .stat span {
+    color: var(--slate);
+    font-weight: 600;
+  }
+
+  @media (max-width: 860px) {
+    .experience {
+      margin-top: -80px;
+    }
+    .card {
+      grid-template-columns: 1fr;
+    }
+    .copy {
+      padding: 2.2rem 1.6rem;
+    }
+    .stat {
+      padding: 1.8rem 1.4rem;
+    }
+  }
+</style>

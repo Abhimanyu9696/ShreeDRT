@@ -1,0 +1,272 @@
+---
+import { faqs, offices } from '../data/site';
+---
+
+<section class="section contact" id="contact">
+  <div class="wrap grid">
+    <div>
+      <span class="eyebrow">Get in touch</span>
+      <h2>Contact Us</h2>
+      <p>If you want full load transportation for your goods?</p>
+
+      <form
+        class="form"
+        id="contact-form"
+        novalidate
+        data-endpoint={import.meta.env.PUBLIC_FORM_ENDPOINT ?? ''}
+        data-fallback-email={offices.head.email}
+      >
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Enter your name" />
+        </div>
+        <div class="field">
+          <label for="f-company">Company Name <span class="req" aria-hidden="true">*</span></label>
+          <input
+            id="f-company"
+            name="company"
+            type="text"
+            autocomplete="organization"
+            placeholder="Enter Your Company Name Here"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+          <input
+            id="f-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="Enter your email address"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="f-goods">Type of Goods <span class="req" aria-hidden="true">*</span></label>
+          <input
+            id="f-goods"
+            name="goods"
+            type="text"
+            placeholder="Give us description of the goods you want to transport."
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="f-message">Message</label>
+          <textarea id="f-message" name="message" placeholder="Any other information you would like us to know."
+          ></textarea>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label>Leave blank <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <button class="btn btn-primary" type="submit">Send message</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="faq" id="faq">
+      <span class="eyebrow">Learn more from</span>
+      <h2>Frequently Asked Questions</h2>
+      {
+        faqs.map((f, i) => (
+          <details name="faq" open={i === 0}>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background: var(--cream);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  h2 {
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+  }
+
+  .form {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .field label {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.35rem;
+  }
+  .req {
+    color: var(--orange-text);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--navy);
+    background: var(--white);
+    border: 1px solid #c9c4ad;
+    border-radius: var(--radius);
+    padding: 0.8rem 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: #7b7f88;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--orange-dark);
+    box-shadow: 0 0 0 3px rgba(253, 152, 0, 0.3);
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    height: 0;
+    overflow: hidden;
+  }
+  .form .btn {
+    justify-self: start;
+  }
+  .form-status {
+    margin: 0;
+    font-weight: 600;
+    min-height: 1.5em;
+  }
+  .form-status.ok {
+    color: #14602b;
+  }
+  .form-status.err {
+    color: #a11a1a;
+  }
+
+  .faq details {
+    border-bottom: 1px solid rgba(15, 23, 42, 0.15);
+  }
+  .faq details:first-of-type {
+    border-top: 1px solid rgba(15, 23, 42, 0.15);
+  }
+  .faq summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    font-family: var(--font-head);
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq summary::after {
+    content: '+';
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    font-size: 1.3rem;
+    line-height: 1;
+    background: var(--orange);
+    color: var(--navy);
+    border-radius: 50%;
+  }
+  .faq details[open] summary::after {
+    content: '–';
+  }
+  .faq details p {
+    padding-bottom: 1.25rem;
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .grid {
+      gap: 40px;
+    }
+  }
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  /* A static site can't send email by itself. If PUBLIC_FORM_ENDPOINT is set (see .env.example)
+     the form POSTs there; otherwise it opens the visitor's email app addressed to the head office. */
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+
+  if (form) {
+    const endpoint = form.dataset.endpoint ?? '';
+    const fallbackEmail = form.dataset.fallbackEmail ?? '';
+    const status = form.querySelector<HTMLElement>('.form-status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+
+    const say = (msg: string, kind = '') => {
+      status.textContent = msg;
+      status.className = `form-status ${kind}`;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      if (data.get('_gotcha')) return; // honeypot tripped: silently drop
+
+      if (endpoint) {
+        const label = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Sending…';
+        say('');
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            body: data,
+            headers: { Accept: 'application/json' },
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          form.reset();
+          say('Thanks for contacting us! We will be in touch with you shortly.', 'ok');
+        } catch {
+          say("Sorry, that didn't send. Please call us on +91 99240 96196.", 'err');
+        } finally {
+          button.disabled = false;
+          button.textContent = label;
+        }
+        return;
+      }
+
+      const body = [
+        `Name: ${data.get('name') ?? ''}`,
+        `Company: ${data.get('company') ?? ''}`,
+        `Email: ${data.get('email') ?? ''}`,
+        `Type of goods: ${data.get('goods') ?? ''}`,
+        '',
+        `${data.get('message') ?? ''}`,
+      ].join('\n');
+      const subject = `New enquiry: ${data.get('company') || 'shreedrt.com'}`;
+      window.location.href = `mailto:${fallbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      say(`Opening your email app… if nothing opens, please email ${fallbackEmail} or call +91 99240 96196.`, 'ok');
+    });
+  }
+</script>

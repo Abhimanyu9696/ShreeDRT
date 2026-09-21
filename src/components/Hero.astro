@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import heroImage from '../assets/hero-trucks.jpg';
+import { site } from '../data/site';
+---
+
+<div class="hero" id="top">
+  <Image
+    class="hero-bg"
+    src={heroImage}
+    alt=""
+    widths={[768, 1280, 1920]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="wrap">
+    <span class="eyebrow">{site.tagline}</span>
+    <h1>{site.name.toUpperCase()}</h1>
+    <p class="lede">{site.lede}</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#contact">Get a quote</a>
+      <a class="btn btn-ghost" href={`tel:${site.primaryPhone.tel}`}>{site.primaryPhone.display}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: min(84vh, 760px);
+    display: flex;
+    align-items: center;
+    padding: 120px 0 170px;
+    color: var(--white);
+  }
+  .hero :global(.hero-bg) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      90deg,
+      rgba(15, 23, 42, 0.9) 0%,
+      rgba(15, 23, 42, 0.62) 55%,
+      rgba(15, 23, 42, 0.25) 100%
+    );
+  }
+  .eyebrow {
+    color: var(--orange);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  h1 {
+    color: var(--white);
+    font-size: clamp(2.1rem, 5.4vw, 4rem);
+    font-weight: 800;
+    max-width: 16ch;
+    margin-bottom: 1.5rem;
+    text-wrap: balance;
+  }
+  .lede {
+    max-width: 46ch;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 0;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 860px) {
+    .hero {
+      padding: 88px 0 150px;
+      min-height: 0;
+    }
+    .hero :global(.hero-bg) {
+      object-position: 62% center;
+    }
+  }
+</style>

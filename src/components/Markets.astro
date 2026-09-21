@@ -1,0 +1,88 @@
+---
+import { Image } from 'astro:assets';
+import { markets } from '../data/markets';
+---
+
+<section class="section" id="markets">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">What we carry</span>
+      <h2>Markets We Serve</h2>
+    </div>
+    <div class="grid">
+      {
+        markets.map((m) => (
+          <article class="market">
+            <Image
+              src={m.image}
+              alt={m.alt}
+              widths={[400, 760]}
+              sizes="(max-width: 860px) 100vw, (max-width: 1024px) 50vw, 380px"
+              loading="lazy"
+            />
+            <div class="body">
+              <h3>{m.title}</h3>
+              <p>{m.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .head {
+    max-width: 640px;
+    margin-bottom: 3rem;
+  }
+  .head h2 {
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    margin-bottom: 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .market {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .market:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-4px);
+  }
+  .market :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .body {
+    padding: 1.6rem 1.6rem 1.9rem;
+    border-top: 4px solid var(--orange);
+  }
+  h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+  .body p {
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

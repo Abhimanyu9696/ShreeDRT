@@ -1,0 +1,133 @@
+---
+// Digital business card. Lives at /vcard-deesa/ — the same address as on the old WordPress site,
+// so existing QR codes and shared links keep working.
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import logo from '../assets/logo.png';
+import { asset, offices, site } from '../data/site';
+
+const phones = offices.head.phones;
+---
+
+<Layout
+  title={`${site.name} | Contact Card, Deesa`}
+  description="Contact card for Shree Delhi Rajasthan Transport Co., Head Office, Deesa. Call, WhatsApp, get directions or save our number."
+  bodyClass="vcard-page"
+  themeColor="#fef9e1"
+  noindex
+>
+  <main class="vcard">
+    <div class="card logo">
+      <Image src={logo} alt="Shree DRT logo" width={150} densities={[1, 2]} loading="eager" />
+    </div>
+
+    <div class="card names">
+      <img src={asset('img/drtc-english.png')} alt="Delhi Rajasthan Transport Co." width="380" height="27" />
+      <img src={asset('img/drtc-hindi.svg')} alt="दिल्ली राजस्थान ट्रांसपोर्ट कं." width="380" height="60" />
+    </div>
+
+    <div class="card row">
+      <a href="https://maps.app.goo.gl/VKGi9GhGp891pRmT9" aria-label="Open location in Google Maps">
+        <img class="map-thumb" src={asset('img/maps.gif')} alt="Map pin" width="76" height="76" />
+      </a>
+      <p>Opp. SS Market Yard,<br />Deesa - Palanpur Highway Road<br />Deesa - 385535, Gujarat</p>
+    </div>
+
+    <div class="card row">
+      <a href={site.whatsapp} aria-label="Chat on WhatsApp">
+        <img src={asset('img/whatsapp.svg')} alt="WhatsApp" width="64" height="64" />
+      </a>
+      <p>
+        {
+          phones.map((p, i) => (
+            <>
+              <a class="tel" href={`tel:${p.tel}`}>{p.display}</a>
+              {i < phones.length - 1 && <br />}
+            </>
+          ))
+        }
+      </p>
+    </div>
+
+    <div class="card row">
+      <a href={asset('files/ShreeDRT.vcf')} download aria-label="Save contact">
+        <img src={asset('img/contacts.svg')} alt="Save contact" width="64" height="64" />
+      </a>
+      <p>Save Number Directly<small lang="hi">नंबर को सेव करने के लिए.</small></p>
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+  body.vcard-page {
+    background: var(--cream);
+    min-height: 100vh;
+    padding: 28px 16px 48px;
+  }
+</style>
+
+<style>
+  .vcard {
+    max-width: 480px;
+    margin: 0 auto;
+    display: grid;
+    gap: 14px;
+  }
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.4rem;
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+    text-align: center;
+  }
+  .logo :global(img) {
+    width: 150px;
+    margin: 0 auto;
+  }
+  .names {
+    display: grid;
+    gap: 14px;
+    justify-items: center;
+  }
+  .names img {
+    width: 100%;
+    max-width: 380px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    gap: 1rem;
+    align-items: center;
+    text-align: left;
+  }
+  .row > a img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  .row .map-thumb {
+    width: 76px;
+    height: 76px;
+    object-fit: cover;
+  }
+  .row p {
+    margin: 0;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .tel {
+    text-decoration: none;
+    display: inline-block;
+    padding: 2px 0;
+  }
+  .tel:hover {
+    color: var(--orange-text);
+    text-decoration: underline;
+  }
+  small {
+    display: block;
+    font-weight: 400;
+    color: var(--slate);
+  }
+</style>

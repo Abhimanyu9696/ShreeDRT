@@ -1,0 +1,127 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { fleet, offices, site } from '../data/site';
+
+const branches = [offices.head, offices.branch];
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="grid">
+      <div class="brand">
+        <Image src={logo} alt="Shree DRT logo" width={64} densities={[1, 2]} loading="lazy" />
+        <strong>{site.name}</strong>
+        <p lang="hi">{site.taglineHindi}</p>
+        <p>{site.hours[0]}<br />{site.hours[1]}</p>
+      </div>
+      <div>
+        <h2>Our Services</h2>
+        <ul>
+          {fleet.map((f) => <li>{f}</li>)}
+        </ul>
+      </div>
+      {
+        branches.map((o) => (
+          <div>
+            <h2>{o.label}</h2>
+            <p>{o.address[0]}<br />{o.address[1]}</p>
+            <p>
+              {o.phones.map((p) => (
+                <>
+                  <a href={`tel:${p.tel}`}>{p.display}</a>
+                  <br />
+                </>
+              ))}
+              <a href={`mailto:${o.email}`}>{o.email}</a>
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="wrap">
+      Copyright &copy; <span id="year">{new Date().getFullYear()}</span>
+      {site.name}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--navy);
+    color: rgba(255, 255, 255, 0.78);
+    padding: 72px 0 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1.1fr 1.1fr;
+    gap: 40px;
+    padding-bottom: 56px;
+  }
+  h2 {
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1rem;
+  }
+  p {
+    margin: 0 0 0.6rem;
+  }
+  a {
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--orange);
+    text-decoration: underline;
+  }
+  .brand :global(img) {
+    width: 64px;
+    height: auto;
+    margin-bottom: 1rem;
+    background: var(--white);
+    border-radius: 50%;
+    padding: 4px;
+  }
+  .brand strong {
+    display: block;
+    font-family: var(--font-head);
+    color: var(--white);
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 0.45rem;
+  }
+  .bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 1.4rem 0;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  @media (max-width: 1024px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+</style>
+
+<script>
+  // Keep the copyright year current for visitors, even if the site hasn't been rebuilt since January.
+  const year = document.getElementById('year');
+  if (year) year.textContent = String(new Date().getFullYear());
+</script>
