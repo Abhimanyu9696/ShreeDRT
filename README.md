@@ -60,9 +60,9 @@ This is a static site (`npm run build` → `dist/`), so it deploys to Cloudflare
    - **Node version:** picked up automatically from `.node-version` (Astro 7 needs Node 22.12+).
      If a build fails on the Node version, add the environment variable `NODE_VERSION=22`.
 3. Every push to `main` builds and publishes to `https://<project>.pages.dev`.
-4. Custom domain (`shreedrt.com`): *Custom domains → Set up a domain* in the Pages project. If the domain's
-   DNS is not on Cloudflare yet, Cloudflare will ask you to switch the domain's nameservers to it
-   (done at wherever the domain is registered).
+4. Custom domain (`shreedrt.com`): in the Pages project, *Custom domains → Set up a domain*. The domain is
+   registered with Cloudflare, so its DNS is already there and Cloudflare adds the record for you.
+   Also add `www.shreedrt.com` if you want it to work (and redirect it to the bare domain).
 
 No `base` setting is needed — the site is served from the root of `*.pages.dev` and of the custom domain.
 `site` in `astro.config.mjs` is `https://shreedrt.com`, which is used for canonical and social-preview URLs.
