@@ -43,15 +43,25 @@ To make it submit directly:
 
 1. Create a free form at [Formspree](https://formspree.io) (or Web3Forms) and copy its endpoint URL.
 2. Locally: copy `.env.example` to `.env` and set `PUBLIC_FORM_ENDPOINT=<url>`.
-3. On GitHub Pages: add a repository **variable** named `PUBLIC_FORM_ENDPOINT` under
-   *Settings → Secrets and variables → Actions → Variables*. The deploy workflow passes it to the build.
+3. On Cloudflare: add an environment variable named `PUBLIC_FORM_ENDPOINT` to the project
+   (*Settings → Variables and Secrets*, or *Environment variables* on Pages) and redeploy. It is read at
+   **build** time, so a change only takes effect after a new build.
 
-## Deploying to GitHub Pages
+## Deploying to Cloudflare
 
-1. In the repo: *Settings → Pages → Build and deployment → Source: **GitHub Actions***.
-2. Push to `main` — `.github/workflows/deploy.yml` builds and publishes the site.
-3. Custom domain (`shreedrt.com`): set it under *Settings → Pages* and point your DNS at GitHub.
-   Without a custom domain the site is served from `https://<user>.github.io/<repo>/`; in that case
-   set `base: '/<repo>'` in `astro.config.mjs`.
+This is a static site (`npm run build` → `dist/`), so it deploys to Cloudflare Pages straight from GitHub.
 
-Any other static host (Netlify, Cloudflare Pages, cPanel) also works: run `npm run build` and upload `dist/`.
+1. In the Cloudflare dashboard: *Workers & Pages → Create → Pages → Connect to Git*, and pick this repo.
+2. Build settings:
+   - **Framework preset:** Astro
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+   - **Node version:** picked up automatically from `.node-version` (Astro 7 needs Node 22.12+).
+     If a build fails on the Node version, add the environment variable `NODE_VERSION=22`.
+3. Every push to `main` builds and publishes to `https://<project>.pages.dev`.
+4. Custom domain (`shreedrt.com`): *Custom domains → Set up a domain* in the Pages project. If the domain's
+   DNS is not on Cloudflare yet, Cloudflare will ask you to switch the domain's nameservers to it
+   (done at wherever the domain is registered).
+
+No `base` setting is needed — the site is served from the root of `*.pages.dev` and of the custom domain.
+`site` in `astro.config.mjs` is `https://shreedrt.com`, which is used for canonical and social-preview URLs.
