@@ -8,7 +8,8 @@ Rebuilt from an UpdraftPlus backup of the original WordPress (Astra + Elementor)
 | URL | File |
 | --- | --- |
 | `/` | `src/pages/index.astro` |
-| `/vcard-deesa/` | `src/pages/vcard-deesa.astro` — digital contact card (same URL as the old site, so existing QR codes still work) |
+| `/vCard/` | `src/pages/vCard.astro` — digital contact card. The URL is case-sensitive: `shreedrt.com/vCard` |
+| `/vcard-deesa/` | Old WordPress address — redirects to `/vCard/` (see `public/_redirects`), so existing QR codes still work |
 
 ## Project structure
 
