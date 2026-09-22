@@ -1,7 +1,11 @@
 /** Company details and copy. Edit here — every page and component reads from this file. */
 
 const FOUNDED = 1965;
-const decade = Math.floor((new Date().getFullYear() - FOUNDED) / 10) * 10;
+// Accurate as of when this was written (Sept 2026) — used only if the build machine's clock is
+// broken and would otherwise compute something absurd (0, negative, etc).
+const KNOWN_GOOD_YEARS = 61;
+const currentYear = new Date().getFullYear();
+const yearsOfExperience = currentYear > FOUNDED ? currentYear - FOUNDED : KNOWN_GOOD_YEARS;
 
 export const site = {
   name: 'Shree Delhi Rajasthan Transport Co.',
@@ -11,8 +15,8 @@ export const site = {
   description:
     'Shree Delhi Rajasthan Transport Co. — serving India since 1965. Full load truck transportation from 7 to 45 metric tons for potatoes, grains, vegetables, fruits, industrial goods and more. Based in Deesa, Gujarat.',
   founded: FOUNDED,
-  /** e.g. "60+" — rolls forward automatically each decade at build time. */
-  experienceLabel: `${decade}+`,
+  /** e.g. "61" — exact years since FOUNDED, recalculated every time the site is built. No rounding. */
+  experienceLabel: `${yearsOfExperience}`,
   lede: 'Full load truck transportation from 7 to 45 metric tons, across India.',
   about:
     "Since 1965, our transportation company has epitomized reliability and excellence in the industry. With a steadfast commitment to safety and efficiency, we've built enduring partnerships and earned the trust of countless clients. As we continue into the future, our mission remains unchanged: to provide innovative solutions and seamless experiences for generations to come.",
