@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import { clients } from '../data/clients';
+
+// The reel is the client list rendered twice back-to-back. The second copy is decorative
+// (aria-hidden, no links) — it's what lets the CSS animation loop from -50% back to 0 seamlessly.
+const reelItems = [...clients, ...clients];
+---
+
+<section class="section clients" id="clients">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Who we carry for</span>
+      <h2>Our Clients</h2>
+    </div>
+
+    <div class="marquee" data-clients-marquee>
+      <ul class="reel">
+        {
+          reelItems.map((c, i) => {
+            const decorative = i >= clients.length;
+            const Tag = c.url && !decorative ? 'a' : 'div';
+            const linkProps = c.url && !decorative ? { href: c.url, target: '_blank', rel: 'noopener noreferrer' } : {};
+            return (
+              <li class="slide" aria-hidden={decorative ? 'true' : undefined}>
+                <Tag class="card" aria-label={decorative ? undefined : c.name} title={decorative ? undefined : c.name} {...linkProps}>
+                  {c.logo ? (
+                    <Image src={c.logo} alt={decorative ? '' : c.name} widths={[160, 320]} sizes="160px" loading="lazy" />
+                  ) : (
+                    <img src={c.logoSrc} alt={decorative ? '' : c.name} loading="lazy" />
+                  )}
+                </Tag>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .clients {
+    background: var(--cream);
+  }
+  .head {
+    max-width: 640px;
+    margin-bottom: 3rem;
+  }
+  .head h2 {
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    margin-bottom: 0;
+  }
+
+  /* Shows 4 logos at a time on desktop, 3 on mobile — src/components/Clients.astro's script
+     measures the visible width and sets --slide-w/--gap/--marquee-distance/--marquee-duration,
+     so the loop always tiles exactly and moves at a constant speed. */
+  .marquee {
+    overflow: hidden;
+    /* fade the edges so slides don't appear to clip abruptly */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  }
+  .reel {
+    display: flex;
+    gap: var(--gap, 20px);
+    width: max-content;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    animation: clients-scroll var(--marquee-duration, 30s) linear infinite;
+  }
+  .marquee:hover .reel {
+    animation-play-state: paused;
+  }
+  @keyframes clients-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-1 * var(--marquee-distance, 50%)));
+    }
+  }
+
+  .slide {
+    flex: 0 0 var(--slide-w, 260px);
+    aspect-ratio: 4 / 3;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  a.card:hover,
+  a.card:focus-visible {
+    box-shadow: var(--shadow);
+    transform: translateY(-4px);
+  }
+  .card :global(img) {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+</style>
+
+<script>
+  // Per-view counts and the 860px breakpoint match the rest of the site (see global.css / Header.astro).
+  const PER_VIEW_DESKTOP = 4;
+  const PER_VIEW_MOBILE = 3;
+  const MOBILE_QUERY = '(max-width: 860px)';
+  const GAP_DESKTOP = 20;
+  const GAP_MOBILE = 10;
+  const PX_PER_SECOND = 22.5; // half the original speed — a calmer, more typical logo-marquee pace
+
+  document.querySelectorAll<HTMLElement>('[data-clients-marquee]').forEach((marquee) => {
+    const reel = marquee.querySelector<HTMLUListElement>('.reel');
+    if (!reel) return;
+    const half = reel.children.length / 2;
+    const mobile = window.matchMedia(MOBILE_QUERY);
+
+    const layout = () => {
+      const isMobile = mobile.matches;
+      const perView = isMobile ? PER_VIEW_MOBILE : PER_VIEW_DESKTOP;
+      const gap = isMobile ? GAP_MOBILE : GAP_DESKTOP;
+      const slideWidth = (marquee.clientWidth - gap * (perView - 1)) / perView;
+      const distance = half * (slideWidth + gap);
+
+      reel.style.setProperty('--slide-w', `${slideWidth}px`);
+      reel.style.setProperty('--gap', `${gap}px`);
+      reel.style.setProperty('--marquee-distance', `${distance}px`);
+      reel.style.setProperty('--marquee-duration', `${distance / PX_PER_SECOND}s`);
+    };
+
+    layout();
+    window.addEventListener('resize', layout);
+  });
+</script>
